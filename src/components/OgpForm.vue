@@ -1,20 +1,32 @@
 <script setup>
+import { truncateToWeightedLength } from '../services/textUtils'
+
 defineProps({
   modelValue: String,
   isLoading: Boolean
 })
 
-defineEmits(['update:modelValue', 'submit'])
+const emit = defineEmits(['update:modelValue', 'submit'])
+
+const handleInput = (event) => {
+  const value = event.target.value
+  const truncatedValue = truncateToWeightedLength(value, 66)
+  emit('update:modelValue', truncatedValue)
+
+  // Force update the textarea value if it was truncated to provide immediate feedback
+  if (value !== truncatedValue) {
+    event.target.value = truncatedValue
+  }
+}
 </script>
 
 <template>
   <div class="input-section">
     <textarea
       :value="modelValue"
-      @input="$emit('update:modelValue', $event.target.value)"
+      @input="handleInput"
       placeholder="Enter text here..."
       rows="5"
-      maxlength="66"
     ></textarea>
     <button
       @click="$emit('submit')"

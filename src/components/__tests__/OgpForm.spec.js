@@ -11,19 +11,25 @@ describe('OgpForm.vue', () => {
       }
     })
     expect(wrapper.find('textarea').exists()).toBe(true)
-    expect(wrapper.find('textarea').attributes('maxlength')).toBe('66')
     expect(wrapper.find('button').text()).toBe('Create')
   })
 
-  it('updates modelValue on input', async () => {
+  it('updates modelValue on input and enforces weighted limit', async () => {
     const wrapper = mount(OgpForm, {
       props: {
         modelValue: '',
         isLoading: false
       }
     })
-    await wrapper.find('textarea').setValue('test')
-    expect(wrapper.emitted('update:modelValue')[0]).toEqual(['test'])
+    const textarea = wrapper.find('textarea')
+
+    // ASCII limit
+    await textarea.setValue('a'.repeat(100))
+    expect(wrapper.emitted('update:modelValue')[0]).toEqual(['a'.repeat(66)])
+
+    // Full-width limit
+    await textarea.setValue('あ'.repeat(100))
+    expect(wrapper.emitted('update:modelValue')[1]).toEqual(['あ'.repeat(40)])
   })
 
   it('emits submit on button click', async () => {
