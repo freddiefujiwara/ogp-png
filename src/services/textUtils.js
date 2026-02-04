@@ -45,3 +45,13 @@ export function truncateToWeightedLength(str, maxWeight) {
   }
   return result;
 }
+
+/**
+ * Replaces all occurrences of newlines with a single space.
+ * @param {string} str
+ * @returns {string}
+ */
+export function replaceNewlines(str) {
+  if (!str) return '';
+  return str.replace(/\r?\n/g, ' ');
+}

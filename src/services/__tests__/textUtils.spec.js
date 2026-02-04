@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { getWeightedLength, truncateToWeightedLength } from '../textUtils'
+import { getWeightedLength, truncateToWeightedLength, replaceNewlines } from '../textUtils'
 
 describe('textUtils', () => {
   describe('getWeightedLength', () => {
@@ -39,6 +39,25 @@ describe('textUtils', () => {
       const str = 'a'.repeat(60) + 'あ'.repeat(10)
       const expected = 'a'.repeat(60) + 'あ'.repeat(3)
       expect(truncateToWeightedLength(str, 66)).toBe(expected)
+    })
+  })
+
+  describe('replaceNewlines', () => {
+    it('returns empty string for empty input', () => {
+      expect(replaceNewlines('')).toBe('')
+      expect(replaceNewlines(null)).toBe('')
+    })
+
+    it('replaces \n with space', () => {
+      expect(replaceNewlines('hello\nworld')).toBe('hello world')
+    })
+
+    it('replaces \r\n with space', () => {
+      expect(replaceNewlines('hello\r\nworld')).toBe('hello world')
+    })
+
+    it('replaces multiple newlines', () => {
+      expect(replaceNewlines('line1\nline2\r\nline3')).toBe('line1 line2 line3')
     })
   })
 })

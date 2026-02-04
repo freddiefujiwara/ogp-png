@@ -32,6 +32,20 @@ describe('OgpForm.vue', () => {
     expect(wrapper.emitted('update:modelValue')[1]).toEqual(['あ'.repeat(40)])
   })
 
+  it('replaces newlines with spaces', async () => {
+    const wrapper = mount(OgpForm, {
+      props: {
+        modelValue: '',
+        isLoading: false
+      }
+    })
+    const textarea = wrapper.find('textarea')
+
+    await textarea.setValue('line1\nline2\r\nline3')
+    expect(wrapper.emitted('update:modelValue')[0]).toEqual(['line1 line2 line3'])
+    expect(textarea.element.value).toBe('line1 line2 line3')
+  })
+
   it('emits submit on button click', async () => {
     const wrapper = mount(OgpForm, {
       props: {
