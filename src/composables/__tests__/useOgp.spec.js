@@ -31,7 +31,7 @@ describe('useOgp composable', () => {
     expect(api.fetchOgpImage).toHaveBeenCalledWith('hello')
   })
 
-  it('generateImage truncates text to 66 characters', async () => {
+  it('generateImage truncates ASCII text to 66 characters', async () => {
     const { inputText, generateImage } = useOgp()
     const longText = 'a'.repeat(100)
     inputText.value = longText
@@ -40,6 +40,17 @@ describe('useOgp composable', () => {
     await generateImage()
 
     expect(api.fetchOgpImage).toHaveBeenCalledWith('a'.repeat(66))
+  })
+
+  it('generateImage truncates full-width text to 40 characters', async () => {
+    const { inputText, generateImage } = useOgp()
+    const longText = 'あ'.repeat(50)
+    inputText.value = longText
+    api.fetchOgpImage.mockResolvedValueOnce({ png: 'test-image' })
+
+    await generateImage()
+
+    expect(api.fetchOgpImage).toHaveBeenCalledWith('あ'.repeat(40))
   })
 
   it('generateImage does nothing if inputText is empty', async () => {

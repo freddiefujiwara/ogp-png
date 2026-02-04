@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { fetchOgpImage } from '../services/api'
+import { truncateToWeightedLength } from '../services/textUtils'
 
 export function useOgp() {
   const inputText = ref('')
@@ -10,8 +11,8 @@ export function useOgp() {
   const generateImage = async () => {
     if (!inputText.value.trim()) return
 
-    // Limit text to 66 characters
-    const text = inputText.value.slice(0, 66)
+    // Limit text to weighted 66 units (66 half-width or 40 full-width)
+    const text = truncateToWeightedLength(inputText.value, 66)
 
     isLoading.value = true
     imageData.value = null
