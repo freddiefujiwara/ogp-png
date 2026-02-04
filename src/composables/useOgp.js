@@ -10,12 +10,15 @@ export function useOgp() {
   const generateImage = async () => {
     if (!inputText.value.trim()) return
 
+    // Limit text to 66 characters
+    const text = inputText.value.slice(0, 66)
+
     isLoading.value = true
     imageData.value = null
     error.value = null
 
     try {
-      const data = await fetchOgpImage(inputText.value)
+      const data = await fetchOgpImage(text)
       imageData.value = data.png
     } catch (err) {
       console.error('Error fetching image:', err)
