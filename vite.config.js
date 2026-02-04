@@ -7,5 +7,10 @@ export default defineConfig({
   plugins: [vue()],
   test: {
     environment: 'jsdom',
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      exclude: ['main.js', 'src/main.js', 'dist/**', 'vite.config.js']
+    }
   },
 })
