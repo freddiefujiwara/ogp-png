@@ -1,5 +1,5 @@
 <script setup>
-import { truncateToWeightedLength } from '../services/textUtils'
+import { truncateToWeightedLength, replaceNewlines } from '../services/textUtils'
 
 defineProps({
   modelValue: String,
@@ -9,12 +9,12 @@ defineProps({
 const emit = defineEmits(['update:modelValue', 'submit'])
 
 const handleInput = (event) => {
-  const value = event.target.value
+  const value = replaceNewlines(event.target.value)
   const truncatedValue = truncateToWeightedLength(value, 66)
   emit('update:modelValue', truncatedValue)
 
-  // Force update the textarea value if it was truncated to provide immediate feedback
-  if (value !== truncatedValue) {
+  // Force update the textarea value if it was truncated or had newlines replaced to provide immediate feedback
+  if (event.target.value !== truncatedValue) {
     event.target.value = truncatedValue
   }
 }
