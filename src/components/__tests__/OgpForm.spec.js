@@ -11,6 +11,7 @@ describe('OgpForm.vue', () => {
       }
     })
     expect(wrapper.find('textarea').exists()).toBe(true)
+    expect(wrapper.find('textarea').attributes('maxlength')).toBe('66')
     expect(wrapper.find('button').text()).toBe('Create')
   })
 

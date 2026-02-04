@@ -14,6 +14,7 @@ defineEmits(['update:modelValue', 'submit'])
       @input="$emit('update:modelValue', $event.target.value)"
       placeholder="Enter text here..."
       rows="5"
+      maxlength="66"
     ></textarea>
     <button
       @click="$emit('submit')"
