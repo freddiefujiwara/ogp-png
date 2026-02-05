@@ -66,7 +66,7 @@ export function useOgp() {
         try {
           await navigator.share({
             files: shareFiles,
-            title: 'Markdown to Image'
+            title: 'OGP'
           })
           return
         } catch (error) {
