@@ -11,15 +11,11 @@ export function useOgp() {
   const isShareSupported = () => {
     if (typeof navigator === 'undefined') return false
 
-    const isMobileDevice = /iPhone|iPad|iPod|Android/i.test(
-      navigator.userAgent || ''
-    )
+    const isMobileDevice =
+      /iPhone|iPad|iPod|Android/i.test(navigator.userAgent || '') ||
+      navigator.userAgentData?.mobile === true
 
-    return (
-      isMobileDevice &&
-      typeof navigator.canShare === 'function' &&
-      typeof navigator.share === 'function'
-    )
+    return isMobileDevice && typeof navigator.share === 'function'
   }
 
   const base64ToBlob = (base64, type) => {
@@ -61,7 +57,12 @@ export function useOgp() {
       const blob = base64ToBlob(imageData.value, 'image/png')
       const shareFiles = [new File([blob], filename, { type: 'image/png' })]
 
-      if (navigator.canShare({ files: shareFiles })) {
+      const canShareFiles =
+        typeof navigator.canShare === 'function'
+          ? navigator.canShare({ files: shareFiles })
+          : true
+
+      if (canShareFiles) {
         try {
           await navigator.share({
             files: shareFiles,
