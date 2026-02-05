@@ -1,4 +1,5 @@
 <script setup>
+import { computed } from 'vue'
 import { useOgp } from './composables/useOgp'
 import AppHeader from './components/AppHeader.vue'
 import OgpForm from './components/OgpForm.vue'
@@ -10,8 +11,13 @@ const {
   imageData,
   error,
   generateImage,
-  downloadImage
+  downloadImage,
+  isShareSupported
 } = useOgp()
+
+const actionLabel = computed(() =>
+  isShareSupported() ? 'Share PNG' : 'Download PNG'
+)
 </script>
 
 <template>
@@ -29,6 +35,7 @@ const {
         :image-data="imageData"
         :is-loading="isLoading"
         :error="error"
+        :action-label="actionLabel"
         @download="downloadImage"
       />
     </main>
