@@ -71,7 +71,7 @@ describe('useOgp composable', () => {
     expect(api.fetchOgpImage).toHaveBeenCalled()
   })
 
-  it('downloadImage creates a link and clicks it', () => {
+  it('downloadImage creates a link and clicks it', async () => {
     const { imageData, downloadImage } = useOgp()
     imageData.value = 'test-data'
 
@@ -84,7 +84,7 @@ describe('useOgp composable', () => {
     const appendChildSpy = vi.spyOn(document.body, 'appendChild').mockImplementation(() => {})
     const removeChildSpy = vi.spyOn(document.body, 'removeChild').mockImplementation(() => {})
 
-    downloadImage('test.png')
+    await downloadImage('test.png')
 
     expect(createElementSpy).toHaveBeenCalledWith('a')
     expect(link.href).toBe('data:image/png;base64,test-data')
@@ -98,10 +98,10 @@ describe('useOgp composable', () => {
     removeChildSpy.mockRestore()
   })
 
-  it('downloadImage does nothing if no imageData', () => {
+  it('downloadImage does nothing if no imageData', async () => {
     const { downloadImage } = useOgp()
     const createElementSpy = vi.spyOn(document, 'createElement')
-    downloadImage()
+    await downloadImage()
     expect(createElementSpy).not.toHaveBeenCalled()
     createElementSpy.mockRestore()
   })

@@ -1,8 +1,9 @@
 <script setup>
-defineProps({
+const props = defineProps({
   imageData: String,
   isLoading: Boolean,
-  error: String
+  error: String,
+  actionLabel: String
 })
 
 defineEmits(['download'])
@@ -20,7 +21,9 @@ defineEmits(['download'])
 
     <div v-if="imageData && !isLoading" class="result-section">
       <img :src="'data:image/png;base64,' + imageData" alt="Generated OGP Image" />
-      <button @click="$emit('download')" class="download-btn">Download PNG</button>
+      <button @click="$emit('download')" class="download-btn">
+        {{ props.actionLabel || 'Download PNG' }}
+      </button>
     </div>
   </div>
 </template>
