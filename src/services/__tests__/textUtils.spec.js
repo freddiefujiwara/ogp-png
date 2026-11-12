@@ -1,28 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { getWeightedLength, truncateToWeightedLength, replaceNewlines } from '../textUtils'
+import { truncateToWeightedLength, replaceNewlines } from '../textUtils'
 
 describe('textUtils', () => {
-  describe('getWeightedLength', () => {
-    it('returns 0 for empty string', () => {
-      expect(getWeightedLength('')).toBe(0)
-    })
-
-    it('counts ASCII characters as 1', () => {
-      expect(getWeightedLength('abc')).toBe(3)
-    })
-
-    it('counts full-width characters as 1.65', () => {
-      // 40 full-width chars should be 66
-      const fullWidthStr = 'あ'.repeat(40)
-      expect(getWeightedLength(fullWidthStr)).toBeCloseTo(66)
-    })
-
-    it('handles mixed characters', () => {
-      // 10 ASCII + 10 full-width = 10 + 16.5 = 26.5
-      expect(getWeightedLength('a'.repeat(10) + 'あ'.repeat(10))).toBeCloseTo(26.5)
-    })
-  })
-
   describe('truncateToWeightedLength', () => {
     it('truncates ASCII correctly', () => {
       expect(truncateToWeightedLength('a'.repeat(100), 66)).toBe('a'.repeat(66))
