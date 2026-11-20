@@ -30,7 +30,7 @@ export function useOgp() {
   }
 
   const generateImage = async () => {
-    if (!inputText.value.trim()) return
+    if (typeof inputText.value !== 'string' || !inputText.value.trim()) return
 
     // Limit text to weighted 66 units (66 half-width or 40 full-width)
     const text = truncateToWeightedLength(inputText.value, 66)
@@ -41,6 +41,11 @@ export function useOgp() {
 
     try {
       const data = await fetchOgpImage(text)
+      // The response is input from outside: anything other than a
+      // non-empty base64 string is a failed generation, not a result.
+      if (!data || typeof data.png !== 'string' || !data.png) {
+        throw new Error('Invalid response from server')
+      }
       imageData.value = data.png
     } catch (err) {
       console.error('Error fetching image:', err)
@@ -54,24 +59,25 @@ export function useOgp() {
     if (!imageData.value) return
 
     if (isShareSupported()) {
-      const blob = base64ToBlob(imageData.value, 'image/png')
-      const shareFiles = [new File([blob], filename, { type: 'image/png' })]
+      try {
+        const blob = base64ToBlob(imageData.value, 'image/png')
+        const shareFiles = [new File([blob], filename, { type: 'image/png' })]
 
-      const canShareFiles =
-        typeof navigator.canShare === 'function'
-          ? navigator.canShare({ files: shareFiles })
-          : true
+        const canShareFiles =
+          typeof navigator.canShare === 'function'
+            ? navigator.canShare({ files: shareFiles })
+            : true
 
-      if (canShareFiles) {
-        try {
+        if (canShareFiles) {
           await navigator.share({
             files: shareFiles,
             title: 'OGP'
           })
           return
-        } catch (error) {
-          // Fall back to sequential downloads if sharing is dismissed or fails.
         }
+      } catch (error) {
+        // Fall back to sequential downloads if sharing is dismissed or
+        // fails, or if the image data cannot be decoded as base64.
       }
     }
 
