@@ -76,8 +76,8 @@ export function useOgp() {
           return
         }
       } catch (error) {
-        // Fall back to sequential downloads if sharing is dismissed or
-        // fails, or if the image data cannot be decoded as base64.
+        // Respect a cancelled share. Other failures still fall back to download.
+        if (error?.name === 'AbortError') return
       }
     }
 
