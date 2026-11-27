@@ -101,6 +101,30 @@ describe('useOgp (abnormal inputs)', () => {
       removeChildSpy.mockRestore()
     })
 
+    it('does not download when sharing is cancelled', async () => {
+      const { imageData, downloadImage } = useOgp()
+      imageData.value = btoa('test image')
+      window.navigator.share.mockRejectedValueOnce(new DOMException('Cancelled', 'AbortError'))
+
+      await downloadImage()
+
+      expect(window.navigator.share).toHaveBeenCalledOnce()
+      expect(createElementSpy).not.toHaveBeenCalledWith('a')
+      expect(link.click).not.toHaveBeenCalled()
+    })
+
+    it('still downloads after a non-abort share failure', async () => {
+      const { imageData, downloadImage } = useOgp()
+      imageData.value = btoa('test image')
+      window.navigator.share.mockRejectedValueOnce(new DOMException('Failed', 'DataError'))
+
+      await downloadImage('fallback.png')
+
+      expect(window.navigator.share).toHaveBeenCalledOnce()
+      expect(link.click).toHaveBeenCalledOnce()
+      expect(link.download).toBe('fallback.png')
+    })
+
     it('falls back to a link download when the image data is not valid base64', async () => {
       const { imageData, downloadImage } = useOgp()
       imageData.value = '!!!not-base64!!!'
